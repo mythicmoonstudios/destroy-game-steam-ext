@@ -2,7 +2,8 @@
   "name": "destroyed-games-on-steam",
   "version": "1.0.0",
   "scripts": {
-    "build": "./scripts/build.sh"
+    "build": "./scripts/build.sh",
+    "package": "./scripts/package.sh"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.270",

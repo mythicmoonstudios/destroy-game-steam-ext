@@ -6,7 +6,7 @@
   --text-dim: #888d97;
   --accent: #9d8cff;
   --danger: #f1554c;
-  --header-gradient: linear-gradient(135deg, #17151f 0%, #211d2e 55%, #2c2640 100%);
+  --header-gradient: linear-gradient(173deg, #2c2640 37%, #211d2e 55%, #100c21 100%);
 }
 
 html, body {
@@ -39,10 +39,21 @@ body {
   width: auto;
 }
 
-.header span {
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+
+.header-count {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dim);
 }
 
 main {

@@ -59,9 +59,21 @@ function buildGameRow(game: Game, actionHtml: string, showLink: boolean): string
   `;
 }
 
+function updateHeaderCount(count: number): void {
+  if (!headerCount) return;
+  if (count === 1) {
+    headerCount.textContent = "1 game found";
+  } else {
+    headerCount.textContent = `${count} games found`;
+  }
+}
+
 async function renderHome(list: HTMLElement): Promise<void> {
   const games = await sendMessage<Games>({ type: Messages.GetAllGames });
-  const rows = sortByLastSeenDesc(games ?? {})
+  const sortedGames = sortByLastSeenDesc(games ?? {});
+  updateHeaderCount(sortedGames.length);
+
+  const rows = sortedGames
     .map(game => buildGameRow(game, `<button class="icon-btn delete-btn" data-id="${escapeHtml(game.id)}" title="Delete">${lucideTrashIcon()}</button>`, true))
     .join("");
   list.innerHTML = rows;
@@ -167,6 +179,7 @@ async function initSettings(): Promise<void> {
 
 const homeList = document.getElementById("home-list");
 const trashList = document.getElementById("trash-list");
+const headerCount = document.getElementById("header-count");
 
 function showTab(tab: Tab): void {
   document.querySelectorAll<HTMLButtonElement>(".tab").forEach(btn => {
