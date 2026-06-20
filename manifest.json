@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Destroyed Games on Steam",
+  "version": "1.0.0",
+  "description": "Updates the Steam home page to show games from Reddit.com/r/DestroyMyGame",
+  "background": {
+    "service_worker": "dist/background/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.steampowered.com/*"
+      ],
+      "js": ["dist/content/content.js"],
+      "css": ["dist/content/content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "dist/popup/popup.html",
+    "default_icon": "dist/assets/destroy-logo.png"
+  },
+  "icons": {
+    "128": "dist/assets/destroy-logo.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://mythicmoonstudios.com/*", "https://steamcommunity.com/*"]
+}

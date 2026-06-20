@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Destroyed Games on Steam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img class="header-logo" src="../assets/destroy-logo-white.png" alt="" />
+      <span>Destroyed Games</span>
+    </header>
+
+    <main>
+      <section class="panel" data-panel="home">
+        <ul class="list" id="home-list"></ul>
+      </section>
+      <section class="panel" data-panel="trash" hidden>
+        <ul class="list" id="trash-list"></ul>
+      </section>
+      <section class="panel" data-panel="settings" hidden>
+        <div class="settings-list">
+          <div class="setting-row">
+            <span class="setting-label">Show Destroyed Games</span>
+            <label class="switch">
+              <input type="checkbox" id="setting-show-destroyed-games" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Minimum Upvotes</span>
+            <input type="number" class="setting-number" id="setting-minimum-upvotes" min="0" step="1" />
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Show Estimated Revenue</span>
+            <label class="switch">
+              <input type="checkbox" id="setting-show-estimated-revenue" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Show Estimated Wishlists</span>
+            <label class="switch">
+              <input type="checkbox" id="setting-show-estimated-wishlists" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Show Steam DB</span>
+            <label class="switch">
+              <input type="checkbox" id="setting-show-steam-db" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Show Gamalytic</span>
+            <label class="switch">
+              <input type="checkbox" id="setting-show-gamalytic" />
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Show Author's Game</span>
+            <select class="setting-select" id="setting-show-authors-game">
+              <option value="show">Of course</option>
+              <option value="wishlisted">Already Wishlisted</option>
+              <option value="hide">Just Hide it</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-promo" id="settings-promo">
+          <div class="settings-promo-state" data-promo="show">
+            <p class="settings-promo-label">Consider wishlisting our game</p>
+            <a class="settings-promo-link" target="_blank" rel="noopener noreferrer">
+              <img class="settings-promo-img" />
+            </a>
+          </div>
+          <p class="settings-promo-reaction" data-promo="wishlisted" hidden>
+            Thank you!
+            <svg></svg>
+          </p>
+          <p class="settings-promo-reaction" data-promo="hide" hidden>
+            <svg></svg>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab tab-active" data-tab="home" role="tab" aria-selected="true">
+        <svg></svg>
+        <span>Home</span>
+      </button>
+      <button class="tab" data-tab="trash" role="tab" aria-selected="false">
+        <svg></svg>
+        <span>Trash</span>
+      </button>
+      <button class="tab" data-tab="settings" role="tab" aria-selected="false">
+        <svg></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
