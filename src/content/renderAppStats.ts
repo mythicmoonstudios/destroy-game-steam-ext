@@ -8,9 +8,18 @@ import {
   STEAMDB_BASE_URL,
 } from "../shared/consts";
 import { escapeHtml, sendMessage, toSafeUrl } from "../shared/utils";
-import { estimateGrossRevenue, estimateUnitsSold, estimateWishlists, formatCompactCurrency, formatCount } from "./estimates";
+import {
+  estimateGrossRevenue,
+  estimateUnitsSold,
+  estimateWishlists,
+  formatCompactCurrency,
+  formatCount,
+  getUnitsMultiplier,
+  getWishlistMultiplier,
+} from "./estimates";
 
-const REVIEW_COUNT_REGEX = /of the ([\d,]+) user reviews/i;
+const APP_REVIEWS_COUNT_REGEX = /([\d,]+)\s*reviews?/i;
+const TOOLTIP_REVIEW_COUNT_REGEX = /of the ([\d,]+) user reviews/i;
 const PRICE_REGEX = /\$\s*([\d,]+(?:\.\d+)?)/;
 
 async function getSettings(): Promise<Settings | null> {
@@ -26,16 +35,29 @@ function getAppId(): string | null {
   return match?.[1] ?? null;
 }
 
-function parseReviewCount(): number | null {
-  const rows = Array.from(document.querySelectorAll<HTMLElement>(".user_reviews_summary_row"));
-  for (const row of rows) {
-    const tooltip = row.getAttribute("data-tooltip-html") ?? "";
-    const match = tooltip.match(REVIEW_COUNT_REGEX);
-    if (match) {
-      return parseInt(match[1].replace(/,/g, ""), 10);
-    }
+function extractReviewCounts(selector: string, getText: (el: HTMLElement) => string, regex: RegExp): number[] {
+  const els = Array.from(document.querySelectorAll<HTMLElement>(selector));
+  const counts: number[] = [];
+  for (const el of els) {
+    const match = getText(el).match(regex);
+    if (!match) continue;
+    counts.push(parseInt(match[1].replace(/,/g, ""), 10));
   }
-  return null;
+  return counts;
+}
+
+function parseReviewCount(): number | null {
+  const candidates = [
+    ...extractReviewCounts(".app_reviews_count", (el) => el.textContent ?? "", APP_REVIEWS_COUNT_REGEX),
+    ...extractReviewCounts(
+      ".user_reviews_summary_row",
+      (el) => el.getAttribute("data-tooltip-html") ?? "",
+      TOOLTIP_REVIEW_COUNT_REGEX
+    ),
+  ];
+  if (candidates.length === 0) return null;
+
+  return Math.max(...candidates);
 }
 
 function parsePrice(): number | null {
@@ -55,8 +77,9 @@ function parseReleaseInfo(): { year: number | null; isPreLaunch: boolean } {
   return { year: parsed.getFullYear(), isPreLaunch: parsed.getTime() > Date.now() };
 }
 
-function buildStatRow(label: string, value: string, pad: boolean = false): string {
-  return `<div class="dev_row" style="margin-top: ${pad ? '8' : '0'}px;">
+function buildStatRow(label: string, value: string, pad: boolean = false, formula: string = ""): string {
+  const titleAttr = formula ? ` title="${escapeHtml(formula)}"` : "";
+  return `<div class="dev_row" style="margin-top: ${pad ? '8' : '0'}px;"${titleAttr}>
     <div class="subtitle column">${escapeHtml(label)}</div>
     <div class="summary column">${escapeHtml(value)}</div>
   </div>`;
@@ -76,9 +99,11 @@ function buildRevenueRow(settings: Settings, releaseYear: number | null): string
   const price = parsePrice();
   if (reviewCount === null || price === null) return '';
 
+  const multiplier = getUnitsMultiplier(releaseYear);
   const units = estimateUnitsSold(reviewCount, releaseYear);
   const revenue = estimateGrossRevenue(units, price);
-  return buildStatRow("Est. Revenue:", formatCompactCurrency(revenue), true);
+  const formula = `${formatCount(reviewCount)} reviews × ${multiplier}x × $${price} = ${formatCompactCurrency(revenue)}`;
+  return buildStatRow("Est. Revenue:", formatCompactCurrency(revenue), true, formula);
 }
 
 async function buildWishlistsRow(settings: Settings, appId: string, isPreLaunch: boolean): Promise<string> {
@@ -87,8 +112,10 @@ async function buildWishlistsRow(settings: Settings, appId: string, isPreLaunch:
   const followerCount = await getFollowerCount(appId);
   if (followerCount === null) return '';
 
+  const multiplier = getWishlistMultiplier(isPreLaunch);
   const wishlists = estimateWishlists(followerCount, isPreLaunch);
-  return buildStatRow("Est. Wishlists:", formatCount(wishlists));
+  const formula = `${formatCount(followerCount)} followers × ${multiplier}x = ${formatCount(wishlists)}`;
+  return buildStatRow("Est. Wishlists:", formatCount(wishlists), false, formula);
 }
 
 function buildLinksRow(appId: string, settings: Settings): string {

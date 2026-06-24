@@ -2,6 +2,8 @@
 
 Chrome extension that shows games from r/DestroyMyGame on the Steam home page.
 
+you can install it from the Chrome store: https://chromewebstore.google.com/detail/destroyed-steam-games/bideediplagdaenjahhmegeegljnmknb
+
 ## Install (unpacked)
 
 1. Install deps: `npm install`

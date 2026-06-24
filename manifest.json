@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Destroyed Steam Games",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Mythic Moon Studios",
   "description": "Uncover hidden indie gems from Reddit. View Steam wishlist estimates, revenue stats, and Gamalytic/SteamDB data",
   "background": {
