@@ -1,5 +1,13 @@
 import { AppDetails, ChosenGame, ChosenGamesResponse, ShowAuthorsGame } from "../types";
-import { CALENDAR_SELECTOR, CAPSULES_ID, DEFAULT_SETTINGS, Messages, SPONSORED_GAME, UTM_SOURCE } from "../shared/consts";
+import {
+  CALENDAR_SELECTOR,
+  CAPSULES_ID,
+  DEFAULT_SETTINGS,
+  Messages,
+  SPONSORED_GAME,
+  STEAM_LABS_RECOMMENDED_SELECTOR,
+  UTM_SOURCE,
+} from "../shared/consts";
 import { escapeHtml, sendMessage, toSafeUrl } from "../shared/utils";
 import { lucideUpIcon } from "../shared/icons";
 
@@ -10,7 +18,9 @@ async function getChosenGames(): Promise<ChosenGamesResponse> {
 
 async function fetchAppDetails(appId: string): Promise<AppDetails> {
   try {
-    const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appId}`);
+    const response = await fetch(`https://store.steampowered.com/api/appdetails?appids=${appId}`, {
+      credentials: "omit",
+    });
     if (!response.ok) {
       return { name: null, headerImage: null };
     }
@@ -103,7 +113,7 @@ export async function renderDestroyedGames(): Promise<void> {
   if (document.getElementById(CAPSULES_ID)) return;
   const { games, settings } = await getChosenGames();
   if (games.length === 0) return;
-  const calendar = document.querySelector(CALENDAR_SELECTOR);
-  if (!calendar) return;
-  calendar.before(await buildCapsules(games, settings.showAuthorsGame));
+  const anchor = document.querySelector(CALENDAR_SELECTOR) ?? document.querySelector(STEAM_LABS_RECOMMENDED_SELECTOR);
+  if (!anchor) return;
+  anchor.before(await buildCapsules(games, settings.showAuthorsGame));
 }

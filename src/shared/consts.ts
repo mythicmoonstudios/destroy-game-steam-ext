@@ -32,6 +32,7 @@ export const SPONSORED_GAME = {
 
 export const CAPSULES_ID = "destroy-game-capsules";
 export const CALENDAR_SELECTOR = ".personal_calendar_ctn";
+export const STEAM_LABS_RECOMMENDED_SELECTOR = ".recommended_by_steam_labs_ctn";
 export const OBSERVER_DEBOUNCE_MS = 200;
 
 export const APP_STATS_MARKER = "data-dgx-app-stats";

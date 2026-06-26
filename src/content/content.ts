@@ -1,10 +1,16 @@
-import { APP_PAGE_GLANCE_SELECTOR, APP_PAGE_PATH_REGEX, CALENDAR_SELECTOR, OBSERVER_DEBOUNCE_MS } from "../shared/consts";
+import {
+  APP_PAGE_GLANCE_SELECTOR,
+  APP_PAGE_PATH_REGEX,
+  CALENDAR_SELECTOR,
+  OBSERVER_DEBOUNCE_MS,
+  STEAM_LABS_RECOMMENDED_SELECTOR,
+} from "../shared/consts";
 import { debounce } from "../shared/utils";
 import { renderDestroyedGames } from "./renderDestroyedGames";
 import { renderAppStats } from "./renderAppStats";
 
 function renderUi(): boolean {
-  if (document.querySelector(CALENDAR_SELECTOR)) {
+  if (document.querySelector(CALENDAR_SELECTOR) || document.querySelector(STEAM_LABS_RECOMMENDED_SELECTOR)) {
     renderDestroyedGames();
     return true;
   }
